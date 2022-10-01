@@ -1,0 +1,8 @@
+.vscode/
+.idea/
+
+# NODE
+node_modules/
+
+# BUILD
+dist/
