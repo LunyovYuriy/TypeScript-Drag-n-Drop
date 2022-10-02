@@ -19,6 +19,7 @@
     "no-alert": 0,
     "no-console": 0,
     // Temporarily disabled until splitting classes to the separate files
-    "max-classes-per-file": 0
+    "max-classes-per-file": 0,
+    "@typescript-eslint/no-explicit-any": 0
   }
 }
