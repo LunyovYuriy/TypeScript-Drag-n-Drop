@@ -15,5 +15,8 @@
   ],
 
   "rules": {
+    // Not needed for learning purpose
+    "no-alert": 0,
+    "no-console": 0
   }
 }
