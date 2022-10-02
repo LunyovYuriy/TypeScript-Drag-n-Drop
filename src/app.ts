@@ -47,6 +47,50 @@ function Autobind(_: unknown, _2: string, descriptor: PropertyDescriptor) {
 }
 /* Decorators end */
 
+/* ProjectList start */
+class ProjectList {
+  templateElement?: HTMLTemplateElement;
+
+  hostElement?: HTMLDivElement;
+
+  element?: HTMLElement;
+
+  constructor(private type: 'active' | 'finished') {
+    this.hostElement = <HTMLDivElement>document.getElementById('app');
+    this.templateElement = <HTMLTemplateElement>document.getElementById('project-list');
+
+    const importedNode = document.importNode(this.templateElement.content, true);
+    this.element = <HTMLElement>importedNode.firstElementChild;
+    this.element.id = `${this.type}-projects`;
+    this.render();
+    this.renderContent();
+  }
+
+  private renderContent() {
+    const titleElement = this.element ? this.element.querySelector('h2') : undefined;
+    if (titleElement) {
+      titleElement.textContent = `${this.type} projects`.toUpperCase();
+    }
+
+    const listElement = this.element ? this.element.querySelector('ul') : undefined;
+    const listId = `${this.type}-projects-list`;
+
+    if (listElement) {
+      listElement.id = listId;
+    }
+  }
+
+  private render() {
+    if (this.element) {
+      this.hostElement?.insertAdjacentElement('beforeend', this.element);
+    }
+  }
+}
+
+const activeProjectList = new ProjectList('active');
+const finishedProjectList = new ProjectList('finished');
+/* ProjectList end */
+
 /* ProjectInput start */
 type TUserInputTuple = [string, string, number] | void;
 
