@@ -14,14 +14,9 @@ function validate(validatableInput: IValidatable) {
   if (validatableInput.required) {
     isValid = isValid && !!String(validatableInput.value).trim().length;
   }
-  console.log(validatableInput.minLength, typeof validatableInput.value === 'string');
 
-  if (validatableInput.minLength !== null && typeof validatableInput.value === 'string') {
-    console.log('tut');
-
-    if (validatableInput.minLength) {
-      isValid = isValid && validatableInput.value.length > validatableInput?.minLength;
-    }
+  if (validatableInput.minLength !== null && typeof validatableInput.value === 'string' && validatableInput.minLength) {
+    isValid = isValid && validatableInput.value.length > validatableInput?.minLength;
   }
   if (validatableInput.maxLength !== null && typeof validatableInput.value === 'string' && validatableInput.maxLength) {
     isValid = isValid && validatableInput.value.length < validatableInput.maxLength;
@@ -52,6 +47,7 @@ function Autobind(_: unknown, _2: string, descriptor: PropertyDescriptor) {
 }
 /* Decorators end */
 
+/* ProjectInput start */
 type TUserInputTuple = [string, string, number] | void;
 
 class ProjectInput {
@@ -68,38 +64,16 @@ class ProjectInput {
   peopleInputElement?: HTMLInputElement;
 
   constructor() {
-    const templateElement = document.getElementById('project-input');
-    const hostElement = document.getElementById('app');
+    this.hostElement = <HTMLDivElement>document.getElementById('app');
+    this.templateElement = <HTMLTemplateElement>document.getElementById('project-input');
 
-    let importedNode;
+    const importedNode = document.importNode(this.templateElement.content, true);
+    this.element = <HTMLFormElement>importedNode.firstElementChild;
+    this.element.id = 'user-input';
 
-    if (templateElement) {
-      this.templateElement = <HTMLTemplateElement>templateElement;
-      importedNode = document.importNode(this.templateElement.content, true);
-    }
-    if (hostElement) {
-      this.hostElement = <HTMLDivElement>hostElement;
-    }
-    if (importedNode) {
-      this.element = <HTMLFormElement>importedNode.firstElementChild;
-      this.element.id = 'user-input';
-    }
-
-    if (this.element) {
-      const titleInputElement = this.element.querySelector('#title');
-      const descriptionInputElement = this.element.querySelector('#description');
-      const peopleInputElement = this.element.querySelector('#people');
-
-      if (titleInputElement) {
-        this.titleInputElement = <HTMLInputElement>titleInputElement;
-      }
-      if (descriptionInputElement) {
-        this.descriptionInputElement = <HTMLInputElement>descriptionInputElement;
-      }
-      if (peopleInputElement) {
-        this.peopleInputElement = <HTMLInputElement>peopleInputElement;
-      }
-    }
+    this.titleInputElement = <HTMLInputElement> this.element.querySelector('#title');
+    this.descriptionInputElement = <HTMLInputElement> this.element.querySelector('#description');
+    this.peopleInputElement = <HTMLInputElement> this.element.querySelector('#people');
 
     this.configure();
     this.render();
@@ -182,3 +156,4 @@ class ProjectInput {
 }
 
 const projectInput = new ProjectInput();
+/* ProjectInput end */
