@@ -140,6 +140,45 @@ abstract class Component<HostType extends HTMLElement, ElementType extends HTMLE
 }
 /* Component Base Class end */
 
+/* ProjectItem Class start */
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+  private project: Project;
+
+  get persons() {
+    if (this.project.people === 1) {
+      return '1 person';
+    }
+    return `${this.project.people} persons`;
+  }
+
+  constructor(hostId: string, project: Project) {
+    super('single-project', hostId, false, project.id);
+    this.project = project;
+    this.configure();
+    this.renderContent();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  configure() {}
+
+  renderContent() {
+    const h2Element = this.element ? this.element.querySelector('h2') : undefined;
+    const h3Element = this.element ? this.element.querySelector('h3') : undefined;
+    const pElement = this.element ? this.element.querySelector('p') : undefined;
+
+    if (h2Element) {
+      h2Element.textContent = this.project.title;
+    }
+    if (h3Element) {
+      h3Element.textContent = `${this.persons} assigned`;
+    }
+    if (pElement) {
+      pElement.textContent = this.project.description;
+    }
+  }
+}
+/* ProjectItem Class end */
+
 /* ProjectList start */
 class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   assignedProjects?: Project[];
@@ -184,16 +223,18 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     const listElement = <HTMLUListElement>document.getElementById(`${this.type}-projects-list`);
     listElement.innerHTML = '' ?? null;
 
+    const ulElementId = this.element ? this.element.querySelector('ul')?.id : undefined;
+
     this.assignedProjects?.forEach((projectItem) => {
-      const listItem = document.createElement('li');
-      listItem.textContent = projectItem.title;
-      listElement?.appendChild(listItem);
+      if (ulElementId) {
+        (() => new ProjectItem(ulElementId, projectItem))();
+      }
     });
   }
 }
 
-const activeProjectList = new ProjectList('active');
-const finishedProjectList = new ProjectList('finished');
+(() => new ProjectList('active'))();
+(() => new ProjectList('finished'))();
 /* ProjectList end */
 
 /* ProjectInput start */
@@ -290,5 +331,5 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
   }
 }
 
-const projectInput = new ProjectInput();
+(() => new ProjectInput())();
 /* ProjectInput end */
