@@ -61,6 +61,18 @@ class ProjectState extends State<Project> {
     );
 
     this.projects.push(newProject);
+    this.updateListeners();
+  }
+
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const currentProject = this.projects.find((project) => project.id === projectId);
+    if (currentProject && currentProject.status !== newStatus) {
+      currentProject.status = newStatus;
+      this.updateListeners();
+    }
+  }
+
+  private updateListeners() {
     this.listeners.forEach((listenerFn) => listenerFn([...this.projects]));
   }
 }
@@ -171,13 +183,18 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
     this.renderContent();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  dragStartHandler(event: DragEvent): void {
-    console.log(event);
+  @Autobind
+  dragStartHandler(event: DragEvent) {
+    const { dataTransfer } = event;
+
+    dataTransfer?.setData('text/plain', this.project.id);
+    if (dataTransfer?.effectAllowed) {
+      dataTransfer.effectAllowed = 'move';
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  dragEndHandler(_: DragEvent): void {
+  dragEndHandler() {
     console.log('dragEnd');
   }
 
@@ -187,9 +204,9 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
   }
 
   renderContent() {
-    const h2Element = this.element ? this.element.querySelector('h2') : undefined;
-    const h3Element = this.element ? this.element.querySelector('h3') : undefined;
-    const pElement = this.element ? this.element.querySelector('p') : undefined;
+    const h2Element = this.element.querySelector('h2') || undefined;
+    const h3Element = this.element.querySelector('h3') || undefined;
+    const pElement = this.element.querySelector('p') || undefined;
 
     if (h2Element) {
       h2Element.textContent = this.project.title;
@@ -205,7 +222,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 /* ProjectItem Class end */
 
 /* ProjectList start */
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget {
   assignedProjects?: Project[];
 
   constructor(private type: 'active' | 'finished') {
@@ -215,7 +232,35 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     this.renderContent();
   }
 
+  @Autobind
+  dragOverHandler(event: DragEvent) {
+    if (event?.dataTransfer && event?.dataTransfer?.types?.[0] === 'text/plain') {
+      event.preventDefault();
+      const listElement = this.element.querySelector('ul');
+      listElement?.classList.add('droppable');
+    }
+  }
+
+  @Autobind
+  dropHandler(event: DragEvent) {
+    const projectId = event?.dataTransfer?.getData('text/plain');
+
+    if (projectId) {
+      projectState.moveProject(projectId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
+    }
+  }
+
+  @Autobind
+  dragLeaveHandler() {
+    const listElement = this.element.querySelector('ul');
+    listElement?.classList.remove('droppable');
+  }
+
   configure() {
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('dragleave', this.dragLeaveHandler);
+    this.element.addEventListener('drop', this.dropHandler);
+
     projectState.addListener((projects: Project[]) => {
       const relevantProjects = projects
         .filter((project) => {
@@ -231,12 +276,12 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   }
 
   renderContent() {
-    const titleElement = this.element ? this.element.querySelector('h2') : undefined;
+    const titleElement = this.element.querySelector('h2');
     if (titleElement) {
       titleElement.textContent = `${this.type} projects`.toUpperCase();
     }
 
-    const listElement = this.element ? this.element.querySelector('ul') : undefined;
+    const listElement = this.element.querySelector('ul');
     const listId = `${this.type}-projects-list`;
 
     if (listElement) {
@@ -248,7 +293,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     const listElement = <HTMLUListElement>document.getElementById(`${this.type}-projects-list`);
     listElement.innerHTML = '' ?? null;
 
-    const ulElementId = this.element ? this.element.querySelector('ul')?.id : undefined;
+    const ulElementId = this.element.querySelector('ul')?.id;
 
     this.assignedProjects?.forEach((projectItem) => {
       if (ulElementId) {
@@ -292,10 +337,9 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
   renderContent() {}
 
   private gatherUserInput(): TUserInputTuple {
-    const enteredTitle = this.titleInputElement ? this.titleInputElement.value : undefined;
-    const enteredDescription = this.descriptionInputElement
-      ? this.descriptionInputElement.value : undefined;
-    const enteredPeople = this.peopleInputElement ? this.peopleInputElement.value : undefined;
+    const enteredTitle = this.titleInputElement.value;
+    const enteredDescription = this.descriptionInputElement.value;
+    const enteredPeople = this.peopleInputElement.value;
 
     const titleValidatable: IValidatable = {
       value: enteredTitle,
