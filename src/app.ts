@@ -1,4 +1,17 @@
-// Project Type
+/* Drag & Drop Interfaces start */
+interface Draggable {
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+}
+
+interface DragTarget {
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+  dragLeaveHandler(event: DragEvent): void;
+}
+/* Drag & Drop Interfaces end */
+
+/* Project Type */
 enum ProjectStatus {
   Active,
   Finished,
@@ -141,7 +154,7 @@ abstract class Component<HostType extends HTMLElement, ElementType extends HTMLE
 /* Component Base Class end */
 
 /* ProjectItem Class start */
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Draggable {
   private project: Project;
 
   get persons() {
@@ -159,7 +172,19 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  configure() {}
+  dragStartHandler(event: DragEvent): void {
+    console.log(event);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  dragEndHandler(_: DragEvent): void {
+    console.log('dragEnd');
+  }
+
+  configure() {
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHandler);
+  }
 
   renderContent() {
     const h2Element = this.element ? this.element.querySelector('h2') : undefined;
