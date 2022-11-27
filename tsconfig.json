@@ -12,7 +12,7 @@
 
     /* Language and Environment */
     "target": "es6",
-    // "module": "CommonJS",
+    "module": "ES2015",
     "esModuleInterop": true,
     "lib": [
       "dom",
@@ -55,7 +55,7 @@
     // "declarationMap": true,                           /* Create sourcemaps for d.ts files. */
     // "emitDeclarationOnly": true,                      /* Only output d.ts files and not JavaScript files. */
     "sourceMap": true,
-    // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If `declaration` is true, also designates a file that bundles all .d.ts output. */
+    // "outFile": "./dist/bundle.js",
     "outDir": "./dist",
     "removeComments": true,
     // "noEmit": true,                                   /* Disable emitting files from a compilation. */
