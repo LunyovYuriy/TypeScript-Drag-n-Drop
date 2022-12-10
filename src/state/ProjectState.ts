@@ -1,16 +1,7 @@
 import { Project, ProjectStatus } from '../models/project';
+import State from './State';
 
-type Listener<ListenerItemType> = (item: ListenerItemType[]) => void;
-
-class State<ListenerItemType> {
-  protected listeners: Listener<ListenerItemType>[] = [];
-
-  addListener(listenerFn: Listener<ListenerItemType>) {
-    this.listeners.push(listenerFn);
-  }
-}
-
-export class ProjectState extends State<Project> {
+class ProjectState extends State<Project> {
   private projects: Project[] = [];
 
   private static instance: ProjectState;
@@ -49,4 +40,5 @@ export class ProjectState extends State<Project> {
   }
 }
 
-export const projectState = ProjectState.getInstance();
+const ProjectStateInstance = ProjectState.getInstance();
+export default ProjectStateInstance;

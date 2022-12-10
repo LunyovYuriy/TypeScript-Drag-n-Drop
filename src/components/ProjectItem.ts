@@ -31,9 +31,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
   }
 
   // eslint-disable-next-line class-methods-use-this
-  dragEndHandler() {
-    console.log('dragEnd');
-  }
+  dragEndHandler() {}
 
   configure() {
     this.element.addEventListener('dragstart', this.dragStartHandler);

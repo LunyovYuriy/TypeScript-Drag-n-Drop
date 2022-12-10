@@ -1,5 +1,5 @@
 import { Project, ProjectStatus } from '../models/project';
-import { projectState } from '../state/project-state';
+import ProjectStateInstance from '../state/ProjectState';
 import IDragTarget from '../interfaces/IDragTarget';
 import autobind from '../decorators/autobind';
 import Component from './Component';
@@ -29,7 +29,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements IDra
     const projectId = event?.dataTransfer?.getData('text/plain');
 
     if (projectId) {
-      projectState.moveProject(projectId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
+      ProjectStateInstance.moveProject(projectId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
     }
   }
 
@@ -44,7 +44,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements IDra
     this.element.addEventListener('dragleave', this.dragLeaveHandler);
     this.element.addEventListener('drop', this.dropHandler);
 
-    projectState.addListener((projects: Project[]) => {
+    ProjectStateInstance.addListener((projects: Project[]) => {
       const relevantProjects = projects
         .filter((project) => {
           if (this.type === 'active') {

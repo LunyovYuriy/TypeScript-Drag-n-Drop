@@ -1,4 +1,4 @@
-import { projectState } from '../state/project-state';
+import ProjectStateInstance from '../state/ProjectState';
 import { IValidatable, validate } from '../utils/validation';
 import autobind from '../decorators/autobind';
 import Component from './Component';
@@ -61,6 +61,7 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
     || !validate(descriptionValidatable)
     || !validate(peopleValidatable)
     ) {
+      // eslint-disable-next-line no-alert
       alert('Invalid input, please try again!');
       throw new Error('invalid input');
     } else {
@@ -88,7 +89,7 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
 
     if (Array.isArray(userInput)) {
       const [title, desc, people] = userInput;
-      projectState.addProject(title, desc, people);
+      ProjectStateInstance.addProject(title, desc, people);
 
       this.clearInputs();
     }
