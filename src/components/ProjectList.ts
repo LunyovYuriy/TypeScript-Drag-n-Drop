@@ -1,9 +1,9 @@
-import { Project, ProjectStatus } from '../models/project.js';
-import { projectState } from '../state/project-state.js';
-import IDragTarget from '../interfaces/IDragTarget.js';
-import autobind from '../decorators/autobind.js';
-import Component from './Component.js';
-import ProjectItem from './ProjectItem.js';
+import { Project, ProjectStatus } from '../models/project';
+import { projectState } from '../state/project-state';
+import IDragTarget from '../interfaces/IDragTarget';
+import autobind from '../decorators/autobind';
+import Component from './Component';
+import ProjectItem from './ProjectItem';
 
 class ProjectList extends Component<HTMLDivElement, HTMLElement> implements IDragTarget {
   assignedProjects?: Project[];

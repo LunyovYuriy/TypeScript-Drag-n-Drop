@@ -1,7 +1,7 @@
-import { projectState } from '../state/project-state.js';
-import { IValidatable, validate } from '../utils/validation.js';
-import autobind from '../decorators/autobind.js';
-import Component from './Component.js';
+import { projectState } from '../state/project-state';
+import { IValidatable, validate } from '../utils/validation';
+import autobind from '../decorators/autobind';
+import Component from './Component';
 
 type TUserInputTuple = [string, string, number] | void;
 

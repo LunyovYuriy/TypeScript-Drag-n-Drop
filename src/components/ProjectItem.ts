@@ -1,7 +1,7 @@
-import { Project } from '../models/project.js';
-import IDraggable from '../interfaces/IDraggable.js';
-import autobind from '../decorators/autobind.js';
-import Component from './Component.js';
+import { Project } from '../models/project';
+import IDraggable from '../interfaces/IDraggable';
+import autobind from '../decorators/autobind';
+import Component from './Component';
 
 class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements IDraggable {
   private project: Project;
